@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The D-Bus contract between the fcitx5 addon (ploverengine.h/cpp) and the
+  Plover-side native extension (bridge.h/cpp) that together make up this
+  plugin -- both compiled from the same directory, both C++, but still two
+  separate processes (fcitx5 and Plover) that only ever talk to each other
+  over this D-Bus interface. This file is the authoritative reference for
+  keeping the two implementations in sync, not something either side
+  generates code from automatically; dbus_protocol.h holds the names/paths/
+  interfaces both sides include directly, and keysyms.h the shared
+  "which keys are recognized at all" / "which are modifiers" tables
+  referenced below.
+
+  Unlike the IBus backend (which asks ibus-daemon/Plover synchronously,
+  once per keystroke, "did you consume this?"), the filter/passthrough
+  decision here is made entirely inside the addon, in C++, with zero D-Bus
+  round trips on the hot path: suppression is pure set-membership against
+  whatever keysym set Plover last pushed via SetSuppressedKeys, and the
+  "which keys are recognized at all" / "which are modifiers" tables are
+  static, from keysyms.h, rather than asking Python per key. Once the addon
+  has decided to accept or passthrough a key, it separately (and
+  asynchronously -- fire-and-forget, no reply waited on) tells Plover what
+  happened, purely so Plover's stroke-assembly state (Keyboard._key_down/
+  _key_up) can follow along; that notification is off fcitx5's critical
+  path entirely.
+-->
+<node>
+  <!--
+    Owned by Plover's native bridge (bridge.h/cpp), at
+    /org/openstenoproject/Plover/Fcitx5Bridge on the session bus, service
+    name org.openstenoproject.Plover. Called by the addon. Every method
+    here is fire-and-forget from the addon's point of view (it never
+    waits for a reply before letting fcitx5 core continue) -- there is no
+    method whose return value the addon's keyEvent() depends on.
+  -->
+  <interface name="org.openstenoproject.Plover.Fcitx5Bridge1">
+    <!--
+      A key the addon decided *not* to suppress (either nothing is
+      currently suppressed, or this particular keysym isn't in the
+      current suppressed set), fired purely so Plover's stroke-assembly
+      state can track it -- mirrors the "not self._suppressed_keys"
+      passthrough-but-still-reported branch of
+      keyboardcontrol_uinput.KeyboardCapture._run's _parse_key_event.
+    -->
+    <method name="KeyDown">
+      <arg name="context_id" type="s" direction="in"/>
+      <arg name="keysym" type="u" direction="in"/>
+    </method>
+    <method name="KeyUp">
+      <arg name="context_id" type="s" direction="in"/>
+      <arg name="keysym" type="u" direction="in"/>
+    </method>
+    <!-- InputMethodEngine::activate(): context_id gained focus. -->
+    <method name="Activate">
+      <arg name="context_id" type="s" direction="in"/>
+    </method>
+    <!-- InputMethodEngine::deactivate(): context_id lost focus. -->
+    <method name="Deactivate">
+      <arg name="context_id" type="s" direction="in"/>
+    </method>
+    <!--
+      InputMethodEngine::reset(), and also called by the addon itself if
+      context_id is destroyed while focused, so Plover never holds a key
+      down that can no longer be released -- same role
+      do_focus_out(release_held=True) plays for the IBus backend.
+    -->
+    <method name="Reset">
+      <arg name="context_id" type="s" direction="in"/>
+    </method>
+  </interface>
+
+  <!--
+    Owned by the addon, at /org/openstenoproject/Fcitx5Plover/Engine,
+    under whatever bus name fcitx5 itself owns (org.fcitx.Fcitx5) --
+    the addon doesn't need a bus name of its own, it just adds an object
+    to fcitx5's existing connection. Called by Plover.
+  -->
+  <interface name="org.openstenoproject.Fcitx5Plover.Engine1">
+    <!-- Commit translated text into context_id's input context. -->
+    <method name="CommitText">
+      <arg name="context_id" type="s" direction="in"/>
+      <arg name="text" type="s" direction="in"/>
+    </method>
+    <!--
+      Forward a synthetic key (e.g. backspace) to context_id's focused
+      application, the same way IBus's forward_key_event() is used for
+      send_backspaces()/send_key_combination() in the IBus backend.
+    -->
+    <method name="ForwardKey">
+      <arg name="context_id" type="s" direction="in"/>
+      <arg name="keysym" type="u" direction="in"/>
+      <arg name="keycode" type="u" direction="in"/>
+      <arg name="state" type="u" direction="in"/>
+      <arg name="is_release" type="b" direction="in"/>
+    </method>
+    <!--
+      Pushes the full set of currently-suppressed keysyms, replacing
+      whatever was previously set. Called whenever
+      KeyboardCapture.suppress() runs. An empty set means "nothing
+      suppressed" (Plover listening for the toggle stroke but not
+      actively typing), matching keyboardcontrol_uinput's
+      `self._suppressed_keys = set(suppressed_keys)`. Global, not
+      per-context, matching KeyboardCapture.suppress()'s own semantics
+      (Plover's suppression state doesn't vary by focused window).
+    -->
+    <method name="SetSuppressedKeys">
+      <arg name="keysyms" type="au" direction="in"/>
+    </method>
+  </interface>
+</node>

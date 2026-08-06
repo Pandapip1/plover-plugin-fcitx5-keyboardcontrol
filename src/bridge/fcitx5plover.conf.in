@@ -1,0 +1,10 @@
+[Addon]
+Name=fcitx5plover
+Comment=Plover stenography engine
+Type=SharedLibrary
+Library=libfcitx5plover
+Category=InputMethod
+
+[Addon/Dependencies]
+0=core:@FCITX5_PLOVER_REQUIRED_FCITX_VERSION@
+1=dbus
