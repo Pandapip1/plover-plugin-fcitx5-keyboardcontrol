@@ -6,7 +6,7 @@
 # dependencies at all.
 find_package(pybind11 CONFIG REQUIRED)
 pybind11_add_module(_native bridge.cpp native.cpp)
-target_link_libraries(_native PRIVATE Fcitx5::Utils)
+target_link_libraries(_native PRIVATE Fcitx5::Utils Python3::Python)
 target_include_directories(_native PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 # Where pip (see the install(CODE) hook in the top-level CMakeLists.txt)

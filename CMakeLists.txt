@@ -13,9 +13,13 @@ set(FCITX5_PLOVER_REQUIRED_FCITX_VERSION 5.1.0)
 find_package(Fcitx5Core ${FCITX5_PLOVER_REQUIRED_FCITX_VERSION} REQUIRED)
 find_package(Fcitx5Module REQUIRED COMPONENTS DBus)
 find_package(Fcitx5Utils REQUIRED)
-# Development.Module (not the heavier Development.Embed/full Development)
-# is all pybind11_add_module (src/plugin) needs.
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development.Module)
+# Development.Module alone (no libpython link) is the usual convention for
+# extension modules -- Python already provides those symbols at dlopen time
+# -- but Nix's hardened linker (bindnow/-Wl,--no-undefined, plus LTO here)
+# demands everything resolve at link time regardless, so the full
+# Development component (giving the Python3::Python target, which actually
+# links libpython) is required instead; see src/plugin/CMakeLists.txt.
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 include(GNUInstallDirs)
 include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")
