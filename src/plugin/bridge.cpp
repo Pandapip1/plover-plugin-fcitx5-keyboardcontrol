@@ -10,7 +10,7 @@
 #include "dbus_protocol.h"
 #include "keysyms.h"
 
-namespace fcitx5plover {
+namespace ploverfcitx5 {
 
 namespace {
 constexpr uint64_t kCallTimeoutUsec = 2000000; // 2s, matching the old Python.
@@ -28,14 +28,14 @@ std::vector<std::string> probeAddon() {
                                         "Introspect");
         auto reply = msg.call(kCallTimeoutUsec);
         if (reply.isError()) {
-            return {"the fcitx5-plover addon does not appear to be loaded "
+            return {"the plover-fcitx5 addon does not appear to be loaded "
                     "(is fcitx5 running, with it installed and enabled?): " +
                     reply.errorMessage()};
         }
         std::string introspectionXml;
         reply >> introspectionXml;
         if (introspectionXml.find(kEngineInterface) == std::string::npos) {
-            return {"the fcitx5-plover addon does not appear to be loaded"};
+            return {"the plover-fcitx5 addon does not appear to be loaded"};
         }
         return {};
     } catch (const std::exception &e) {
@@ -280,4 +280,4 @@ void Bridge::handleReset(const std::string &contextId) {
     releaseAllPressedKeys();
 }
 
-} // namespace fcitx5plover
+} // namespace ploverfcitx5

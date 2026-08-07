@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(fcitx5-plover VERSION 0.1.0)
+project(plover-fcitx5 VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,9 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Minimum fcitx5 version providing the InputMethodEngine/ObjectVTable API
 # this addon relies on, not necessarily the exact version it was built
 # against -- deliberately a floor, not a pin.
-set(FCITX5_PLOVER_REQUIRED_FCITX_VERSION 5.1.0)
+set(PLOVER_FCITX5_REQUIRED_FCITX_VERSION 5.1.0)
 
-find_package(Fcitx5Core ${FCITX5_PLOVER_REQUIRED_FCITX_VERSION} REQUIRED)
+find_package(Fcitx5Core ${PLOVER_FCITX5_REQUIRED_FCITX_VERSION} REQUIRED)
 find_package(Fcitx5Module REQUIRED COMPONENTS DBus)
 find_package(Fcitx5Utils REQUIRED)
 # Development.Module alone (no libpython link) is the usual convention for
@@ -46,9 +46,9 @@ install(CODE "
                 --no-build-isolation --no-index --no-deps
                 --prefix \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}\"
                 \"${CMAKE_SOURCE_DIR}\"
-        RESULT_VARIABLE _fcitx5_plover_pip_result
+        RESULT_VARIABLE _plover_fcitx5_pip_result
     )
-    if(NOT _fcitx5_plover_pip_result EQUAL 0)
+    if(NOT _plover_fcitx5_pip_result EQUAL 0)
         message(FATAL_ERROR \"pip install of the plover_fcitx5 Python package failed\")
     endif()
 ")

@@ -15,9 +15,9 @@ namespace {
 // of this bridge, needs that instead, for its key_down()/key_up() calls) --
 // see keysyms.h for the shared table both sides draw from.
 const std::unordered_set<uint32_t> &kHandledKeysyms =
-    fcitx5plover::handledKeysymSet();
+    ploverfcitx5::handledKeysymSet();
 const std::unordered_set<uint32_t> &kModifierKeysyms =
-    fcitx5plover::modifierKeysymSet();
+    ploverfcitx5::modifierKeysymSet();
 
 } // namespace
 
@@ -60,7 +60,7 @@ dbus::Bus *PloverEngine::bus() { return dbus()->call<IDBusModule::bus>(); }
 
 std::vector<InputMethodEntry> PloverEngine::listInputMethods() {
     std::vector<InputMethodEntry> result;
-    result.push_back(InputMethodEntry("plover", "Plover", "en", "fcitx5plover"));
+    result.push_back(InputMethodEntry("plover", "Plover", "en", "ploverfcitx5"));
     return result;
 }
 
@@ -236,4 +236,4 @@ void PloverEngine::notifyReset(const std::string &contextId) {
 
 } // namespace fcitx
 
-FCITX_ADDON_FACTORY_V2(fcitx5plover, fcitx::PloverEngineFactory)
+FCITX_ADDON_FACTORY_V2(ploverfcitx5, fcitx::PloverEngineFactory)

@@ -1,5 +1,5 @@
-#ifndef _FCITX5_PLOVER_KEYSYMS_H_
-#define _FCITX5_PLOVER_KEYSYMS_H_
+#ifndef _PLOVER_FCITX5_KEYSYMS_H_
+#define _PLOVER_FCITX5_KEYSYMS_H_
 
 // Single source of truth for which keys this plugin recognizes, shared
 // between the fcitx5 addon (ploverengine.cpp, which only needs to know
@@ -20,7 +20,7 @@
 #include <fcitx-utils/keysym.h>
 #include <fcitx-utils/keysymgen.h>
 
-namespace fcitx5plover {
+namespace ploverfcitx5 {
 
 struct HandledKey {
     // The name Plover's Capture.key_down()/key_up()/suppress() know this
@@ -166,6 +166,6 @@ inline std::optional<uint32_t> keysymForPloverName(const std::string &name) {
     return it->second;
 }
 
-} // namespace fcitx5plover
+} // namespace ploverfcitx5
 
-#endif // _FCITX5_PLOVER_KEYSYMS_H_
+#endif // _PLOVER_FCITX5_KEYSYMS_H_

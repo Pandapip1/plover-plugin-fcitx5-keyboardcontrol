@@ -74,11 +74,11 @@ std::string keysymPortableName(uint32_t sym) {
 py::object &keyNameLookup() {
     static py::object *lookup = [] {
         py::dict table;
-        for (const auto &key : fcitx5plover::kHandledKeys) {
+        for (const auto &key : ploverfcitx5::kHandledKeys) {
             table[py::str(toLower(keysymPortableName(key.keysym)))] =
                 py::int_(key.keysym);
         }
-        for (uint32_t sym : fcitx5plover::kModifierKeysyms) {
+        for (uint32_t sym : ploverfcitx5::kModifierKeysyms) {
             table[py::str(toLower(keysymPortableName(sym)))] = py::int_(sym);
         }
         py::module_::import("plover.key_combo")
@@ -93,7 +93,7 @@ public:
     void start(py::function onKeyEvent) {
         onKeyEvent_ = std::move(onKeyEvent);
         py::gil_scoped_release release;
-        fcitx5plover::Bridge::instance().setKeyCallback(
+        ploverfcitx5::Bridge::instance().setKeyCallback(
             [this](const std::string &key, bool pressed) {
                 py::gil_scoped_acquire acquire;
                 try {
@@ -107,19 +107,19 @@ public:
                     PyErr_Print();
                 }
             });
-        fcitx5plover::Bridge::instance().pushSuppressedKeys(suppressedKeysyms_);
+        ploverfcitx5::Bridge::instance().pushSuppressedKeys(suppressedKeysyms_);
     }
 
-    void cancel() { fcitx5plover::Bridge::instance().clearKeyCallback(); }
+    void cancel() { ploverfcitx5::Bridge::instance().clearKeyCallback(); }
 
     void suppress(const std::vector<std::string> &keys) {
         suppressedKeysyms_.clear();
         for (const auto &key : keys) {
-            if (auto sym = fcitx5plover::keysymForPloverName(key)) {
+            if (auto sym = ploverfcitx5::keysymForPloverName(key)) {
                 suppressedKeysyms_.push_back(*sym);
             }
         }
-        fcitx5plover::Bridge::instance().pushSuppressedKeys(suppressedKeysyms_);
+        ploverfcitx5::Bridge::instance().pushSuppressedKeys(suppressedKeysyms_);
     }
 
 private:
@@ -136,7 +136,7 @@ public:
             return;
         }
         py::gil_scoped_release release;
-        fcitx5plover::Bridge::instance().commitText(*contextId, s);
+        ploverfcitx5::Bridge::instance().commitText(*contextId, s);
     }
 
     void send_backspaces(int count) {
@@ -146,7 +146,7 @@ public:
             return;
         }
         py::gil_scoped_release release;
-        auto &bridge = fcitx5plover::Bridge::instance();
+        auto &bridge = ploverfcitx5::Bridge::instance();
         for (int i = 0; i < count; ++i) {
             bridge.forwardKey(*contextId, FcitxKey_BackSpace, 0, 0, false);
             bridge.forwardKey(*contextId, FcitxKey_BackSpace, 0, 0, true);
@@ -176,12 +176,12 @@ public:
         }
 
         py::gil_scoped_release release;
-        auto &bridge = fcitx5plover::Bridge::instance();
+        auto &bridge = ploverfcitx5::Bridge::instance();
         uint32_t state = 0;
         for (const auto &[keysym, pressed] : events) {
             bridge.forwardKey(*contextId, keysym, 0, state, !pressed);
             sleepForDelay();
-            if (uint32_t mask = fcitx5plover::modifierMaskFor(keysym)) {
+            if (uint32_t mask = ploverfcitx5::modifierMaskFor(keysym)) {
                 if (pressed) {
                     state |= mask;
                 } else {
@@ -199,7 +199,7 @@ private:
     // top-of-file comment.
     std::optional<std::string> focusedContextIdReleased() {
         py::gil_scoped_release release;
-        return fcitx5plover::Bridge::instance().focusedContextId();
+        return ploverfcitx5::Bridge::instance().focusedContextId();
     }
 
     void sleepForDelay() const {
@@ -214,7 +214,7 @@ private:
 } // namespace
 
 PYBIND11_MODULE(_native, m) {
-    m.def("probe_addon", &fcitx5plover::probeAddon,
+    m.def("probe_addon", &ploverfcitx5::probeAddon,
          py::call_guard<py::gil_scoped_release>());
 
     py::class_<Capture>(m, "Capture")

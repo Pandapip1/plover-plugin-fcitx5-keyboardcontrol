@@ -70,12 +70,12 @@
   </interface>
 
   <!--
-    Owned by the addon, at /org/openstenoproject/Fcitx5Plover/Engine,
+    Owned by the addon, at /org/openstenoproject/PloverFcitx5/Engine,
     under whatever bus name fcitx5 itself owns (org.fcitx.Fcitx5) --
     the addon doesn't need a bus name of its own, it just adds an object
     to fcitx5's existing connection. Called by Plover.
   -->
-  <interface name="org.openstenoproject.Fcitx5Plover.Engine1">
+  <interface name="org.openstenoproject.PloverFcitx5.Engine1">
     <!-- Commit translated text into context_id's input context. -->
     <method name="CommitText">
       <arg name="context_id" type="s" direction="in"/>

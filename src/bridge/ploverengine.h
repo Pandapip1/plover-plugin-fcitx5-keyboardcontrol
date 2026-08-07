@@ -1,5 +1,5 @@
-#ifndef _FCITX5_PLOVER_PLOVERENGINE_H_
-#define _FCITX5_PLOVER_PLOVERENGINE_H_
+#ifndef _PLOVER_FCITX5_PLOVERENGINE_H_
+#define _PLOVER_FCITX5_PLOVERENGINE_H_
 
 #include <memory>
 #include <string>
@@ -26,11 +26,11 @@ namespace fcitx {
 
 // D-Bus names/paths -- see dbus_protocol.h, shared with bridge.h/cpp (the
 // Plover-side half of this bridge) and org.openstenoproject.plover.fcitx5.xml.
-using fcitx5plover::kEngineInterface;
-using fcitx5plover::kEngineObjectPath;
-using fcitx5plover::kPloverBridgeInterface;
-using fcitx5plover::kPloverBridgePath;
-using fcitx5plover::kPloverServiceName;
+using ploverfcitx5::kEngineInterface;
+using ploverfcitx5::kEngineObjectPath;
+using ploverfcitx5::kPloverBridgeInterface;
+using ploverfcitx5::kPloverBridgePath;
+using ploverfcitx5::kPloverServiceName;
 
 class PloverEngine;
 
@@ -136,4 +136,4 @@ public:
 
 } // namespace fcitx
 
-#endif // _FCITX5_PLOVER_PLOVERENGINE_H_
+#endif // _PLOVER_FCITX5_PLOVERENGINE_H_

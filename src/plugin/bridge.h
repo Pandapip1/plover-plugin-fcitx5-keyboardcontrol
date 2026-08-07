@@ -1,5 +1,5 @@
-#ifndef _FCITX5_PLOVER_BRIDGE_H_
-#define _FCITX5_PLOVER_BRIDGE_H_
+#ifndef _PLOVER_FCITX5_BRIDGE_H_
+#define _PLOVER_FCITX5_BRIDGE_H_
 
 // Plover-side half of the D-Bus bridge to the fcitx5 addon
 // (../bridge/ploverengine.h/cpp) -- owns the connection and background
@@ -29,9 +29,9 @@
 #include <fcitx-utils/event.h>
 #include <fcitx-utils/eventdispatcher.h>
 
-namespace fcitx5plover {
+namespace ploverfcitx5 {
 
-// Reasons the fcitx5-plover addon isn't reachable right now, or an empty
+// Reasons the plover-fcitx5 addon isn't reachable right now, or an empty
 // vector if it is. Cheap, synchronous, side-effect-free (its own throwaway
 // Bus connection, untangled from the shared Bridge below) -- safe to call
 // any time, e.g. every time the config GUI opens.
@@ -43,7 +43,7 @@ std::vector<std::string> probeAddon();
 using KeyCallback = std::function<void(const std::string &ploverKey, bool pressed)>;
 
 // Owns the D-Bus connection and its background event loop thread. There is
-// only ever one fcitx5-plover addon connection process-wide, regardless of
+// only ever one plover-fcitx5 addon connection process-wide, regardless of
 // how many of Capture/Emulation are in use, so this is a singleton rather
 // than something native.cpp constructs per instance.
 class Bridge {
@@ -108,6 +108,6 @@ private:
     friend class Service;
 };
 
-} // namespace fcitx5plover
+} // namespace ploverfcitx5
 
-#endif // _FCITX5_PLOVER_BRIDGE_H_
+#endif // _PLOVER_FCITX5_BRIDGE_H_

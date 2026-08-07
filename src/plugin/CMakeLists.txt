@@ -16,8 +16,8 @@ target_include_directories(_native PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
 execute_process(
    COMMAND "${Python3_EXECUTABLE}" -c
        "import sysconfig; print(sysconfig.get_path('platlib', vars={'base': '', 'platbase': ''}))"
-   OUTPUT_VARIABLE FCITX5_PLOVER_PYTHON_SITE_PACKAGES
+   OUTPUT_VARIABLE PLOVER_FCITX5_PYTHON_SITE_PACKAGES
    OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 install(TARGETS _native LIBRARY DESTINATION
-       "${CMAKE_INSTALL_PREFIX}${FCITX5_PLOVER_PYTHON_SITE_PACKAGES}/plover_fcitx5")
+       "${CMAKE_INSTALL_PREFIX}${PLOVER_FCITX5_PYTHON_SITE_PACKAGES}/plover_fcitx5")

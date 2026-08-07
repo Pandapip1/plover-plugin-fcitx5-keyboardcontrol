@@ -8,7 +8,7 @@ This keeps importing *this* module -- e.g. to register the
 `KeyboardCapture`/`KeyboardEmulation` plugins -- safe even when the
 extension isn't (e.g. built against a different fcitx5/Python than what's
 actually running); `get_missing_requirements` reports that instead, along
-with whether the fcitx5-plover addon is actually reachable.
+with whether the plover-fcitx5 addon is actually reachable.
 """
 
 from plover.machine.keyboard_capture import Capture
